@@ -2,18 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace CqrsWithMediatR.Repositories
 {
     public class TickerRepository : ITickersRepository
     {
+        private readonly ILogger<TickerRepository> _logger;
+        
+        public TickerRepository(ILogger<TickerRepository> logger)
+        {
+            _logger = logger;
+        }
+        
         private readonly List<Ticker> _tickers = new()
         {
             new Ticker
             {
                 Id = Guid.Parse("0bb7daa5-7f27-4b5f-95df-3d8b3b86d7ed"),
                 Symbol = "TSLA",
-                Sector = "Automotive",
+                Sector = "Automotive"
             }
         };
 
@@ -37,6 +45,7 @@ namespace CqrsWithMediatR.Repositories
 
         public Task<Ticker> GetTickerAsync(Guid tickerId)
         {
+            _logger.LogInformation("Searching for {TickerId}", tickerId);
             return Task.FromResult(_tickers.SingleOrDefault(x => x.Id == tickerId));
         }
     }

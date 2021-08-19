@@ -1,12 +1,13 @@
 using System;
 using System.Threading.Tasks;
+using CqrsWithMediatR.Models;
 using CqrsWithMediatR.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CqrsWithMediatR.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("ticker")]
     public class TickerController : Controller
     {
         private readonly ITickersRepository _tickersRepository;
@@ -24,9 +25,9 @@ namespace CqrsWithMediatR.Controllers
         }
         
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTicker(Guid tickerId)
+        public async Task<IActionResult> GetTicker(Guid id)
         {
-            var tickers = await _tickersRepository.GetTickerAsync(tickerId);
+            var tickers = await _tickersRepository.GetTickerAsync(id);
             return Ok(tickers);
         }
         

@@ -1,4 +1,4 @@
-namespace CqrsWithMediatR.Controllers
+namespace CqrsWithMediatR.Models
 {
     public class CreateTickerRequest
     {
