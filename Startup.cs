@@ -1,4 +1,5 @@
 using CqrsWithMediatR.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +16,7 @@ namespace CqrsWithMediatR
         {
             services.AddControllers();
             services.AddSingleton<ITickersRepository, TickerRepository>();
+            services.AddMediatR(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using CqrsWithMediatR.Commands;
 using CqrsWithMediatR.Models;
-using CqrsWithMediatR.Repositories;
+using CqrsWithMediatR.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CqrsWithMediatR.Controllers
@@ -10,32 +12,35 @@ namespace CqrsWithMediatR.Controllers
     [Route("ticker")]
     public class TickerController : Controller
     {
-        private readonly ITickersRepository _tickersRepository;
+        private readonly IMediator _mediator;
         
-        public TickerController(ITickersRepository tickersRepository)
+        public TickerController(IMediator mediator)
         {
-            _tickersRepository = tickersRepository;
+            _mediator = mediator;
         }
         
         [HttpGet]
         public async Task<IActionResult> GetTickers()
         {
-            var tickers = await _tickersRepository.GetTickersAsync();
-            return Ok(tickers);
+            var query = new GetAllTickersQuery();
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
         
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTicker(Guid id)
         {
-            var tickers = await _tickersRepository.GetTickerAsync(id);
-            return Ok(tickers);
+            var query = new GetTickerByIdQuery(id);
+            var result = await _mediator.Send(query);
+            return result is not null ? Ok(result) : NotFound();
         }
         
         [HttpPost("")]
         public async Task<IActionResult> CreateTicker([FromBody]CreateTickerRequest request)
         {
-            var tickers = await _tickersRepository.CreateTickerAsync(request.Symbol, request.Sector);
-            return Ok(tickers);
+            var command = new CreateTickerCommand(request.Symbol, request.Sector);
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
     }
 }
